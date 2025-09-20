@@ -1,0 +1,149 @@
+{
+  "parser": {
+    "log_formats": {
+      "json": {
+        "enabled": true,
+        "timestamp_field": "timestamp",
+        "ip_field": "ip",
+        "content_field": "message",
+        "level_field": "level"
+      },
+      "apache": {
+        "enabled": true,
+        "pattern": "^(?P<ip>\\S+) \\S+ \\S+ \\[(?P<timestamp>[^\\]]+)\\] \"(?P<method>\\S+) (?P<url>\\S+) (?P<protocol>\\S+)\" (?P<status>\\d+) (?P<size>\\d+)(?: \"(?P<referer>[^\"]*)\" \"(?P<user_agent>[^\"]*)\")?$"
+      },
+      "nginx": {
+        "enabled": true,
+        "pattern": "^(?P<ip>\\S+) - \\S+ \\[(?P<timestamp>[^\\]]+)\\] \"(?P<method>\\S+) (?P<url>\\S+) (?P<protocol>\\S+)\" (?P<status>\\d+) (?P<size>\\d+)(?: \"(?P<referer>[^\"]*)\" \"(?P<user_agent>[^\"]*)\")?$"
+      },
+      "timestamp_ip": {
+        "enabled": true,
+        "pattern": "^(?P<timestamp>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}) \\[(?P<level>\\w+)\\] (?P<ip>\\S+) (?P<content>.*)$"
+      },
+      "error": {
+        "enabled": true,
+        "pattern": "^(?P<timestamp>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}) \\[(?P<level>\\w+)\\] (?P<content>.*)$"
+      }
+    },
+    "timestamp_formats": [
+      "%Y-%m-%d %H:%M:%S",
+      "%Y-%m-%dT%H:%M:%S",
+      "%Y-%m-%dT%H:%M:%S.%f",
+      "%Y-%m-%dT%H:%M:%SZ",
+      "%Y-%m-%dT%H:%M:%S.%fZ",
+      "%d/%b/%Y:%H:%M:%S %z",
+      "%d/%b/%Y:%H:%M:%S"
+    ]
+  },
+  "detector": {
+    "rules": {
+      "sql_injection": {
+        "enabled": true,
+        "patterns": [
+          "(?i)(union\\s+select|select\\s+\\*\\s+from|drop\\s+table|insert\\s+into|delete\\s+from|update\\s+set|create\\s+table|alter\\s+table|exec\\s*\\(|execute\\s*\\(|xp_cmdshell|sp_oacreate|sp_adduser)",
+          "(?i)('or\\s*'1'='1|\"or\\s*\"1\"=\"1|or\\s+1=1|or\\s+1=1--|'\\s+or\\s+'1'='1|\"\\s+or\\s+\"1\"=\"1)",
+          "(?i)(waitfor\\s+delay|sleep\\s*\\(|benchmark\\s*\\(|pg_sleep\\(|dbms_pipe\\.receive_message)",
+          "(?i)(load_file\\s*\\(|into\\s+outfile|into\\s+dumpfile)"
+        ],
+        "level": "high"
+      },
+      "xss": {
+        "enabled": true,
+        "patterns": [
+          "(?i)(<script|javascript:|onload=|onerror=|onclick=|onmouseover=|onfocus=|onblur=|onchange=|onsubmit=|onreset=|onselect=|onunload=)",
+          "(?i)(alert\\s*\\(|confirm\\s*\\(|prompt\\s*\\(|eval\\s*\\(|document\\.cookie|document\\.location|window\\.location)",
+          "(?i)(<iframe|<object|<embed|<applet|<meta|<link|<base|<img|<svg|<canvas|<audio|<video)"
+        ],
+        "level": "high"
+      },
+      "sensitive_data": {
+        "enabled": true,
+        "patterns": [
+          "(\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b)",
+          "(\\b1[3-9]\\d{9}\\b)",
+          "(\\b[1-9]\\d{5}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])\\d{3}[0-9Xx]\\b)",
+          "(\\b[1-9]\\d{14}\\b)",
+          "(\\b\\d{4}[ -]?\\d{4}[ -]?\\d{4}[ -]?\\d{4}\\b)"
+        ],
+        "level": "medium"
+      },
+      "path_traversal": {
+        "enabled": true,
+        "patterns": [
+          "(?i)(\\.\\./|\\.\\.\\\\|%2e%2e%2f|%2e%2e\\\\|..%2f|..%5c)",
+          "(?i)(/etc/passwd|/etc/shadow|c:\\\\windows\\\\system32|\\\\\\\\?\\\\)",
+          "(?i)(file://|http://|https://|ftp://|sftp://)"
+        ],
+        "level": "high"
+      },
+      "command_injection": {
+        "enabled": true,
+        "patterns": [
+          "(?i)(;|\\||&|&&|`|\\$\\(|\\${)",
+          "(?i)(nc -e|netcat -e|/bin/sh|/bin/bash|cmd.exe|powershell.exe)",
+          "(?i)(wget|curl|fetch|lynx|links)"
+        ],
+        "level": "high"
+      }
+    },
+    "ml_model": {
+      "enabled": true,
+      "algorithm": "logistic_regression",
+      "vectorizer": "tfidf",
+      "max_features": 1000,
+      "ngram_range": [1, 2],
+      "test_size": 0.2,
+      "random_state": 42
+    }
+  },
+  "responder": {
+    "sanitization": {
+      "email": {
+        "enabled": true,
+        "replacement": "***@***.***"
+      },
+      "phone": {
+        "enabled": true,
+        "replacement": "***********"
+      },
+      "id_card": {
+        "enabled": true,
+        "replacement": "***********"
+      },
+      "bank_card": {
+        "enabled": true,
+        "replacement": "************"
+      },
+      "credit_card": {
+        "enabled": true,
+        "replacement": "************"
+      }
+    },
+    "response": {
+      "high": {
+        "action": "blocked",
+        "message": "High risk activity detected and blocked"
+      },
+      "medium": {
+        "action": "flagged",
+        "message": "Medium risk activity detected and flagged for review"
+      },
+      "low": {
+        "action": "logged",
+        "message": "Low risk activity detected and logged"
+      }
+    }
+  },
+  "api": {
+    "host": "0.0.0.0",
+    "port": 5000,
+    "debug": false,
+    "max_content_length": 10485760
+  },
+  "output": {
+    "format": "json",
+    "include_sanitized_logs": true,
+    "include_original_logs": false,
+    "include_detailed_analysis": true
+  }
+}

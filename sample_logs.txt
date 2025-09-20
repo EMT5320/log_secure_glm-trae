@@ -1,0 +1,24 @@
+192.168.1.1 - - [10/Oct/2023:13:55:36 +0000] "GET /api/users?id=1' OR '1'='1 HTTP/1.1" 200 1234
+192.168.1.2 - - [10/Oct/2023:13:55:37 +0000] "POST /api/login HTTP/1.1" 200 567
+192.168.1.3 - - [10/Oct/2023:13:55:38 +0000] "GET /api/products?q=<script>alert('xss')</script> HTTP/1.1" 200 8901
+192.168.1.4 - - [10/Oct/2023:13:55:39 +0000] "GET /api/files?file=../../../etc/passwd HTTP/1.1" 200 45
+192.168.1.5 - - [10/Oct/2023:13:55:40 +0000] "POST /api/register HTTP/1.1" 200 234
+192.168.1.6 - - [10/Oct/2023:13:55:41 +0000] "GET /api/search?query=DROP TABLE users HTTP/1.1" 200 678
+192.168.1.7 - - [10/Oct/2023:13:55:42 +0000] "POST /api/contact HTTP/1.1" 200 901
+192.168.1.8 - - [10/Oct/2023:13:55:43 +0000] "GET /api/download?file=..%2F..%2F..%2Fetc%2Fpasswd HTTP/1.1" 200 345
+192.168.1.9 - - [10/Oct/2023:13:55:44 +0000] "POST /api/login HTTP/1.1" 200 567
+192.168.1.10 - - [10/Oct/2023:13:55:45 +0000] "GET /api/profile?id=1; DROP TABLE users; HTTP/1.1" 200 890
+{"timestamp": "2023-10-10T13:55:46Z", "ip": "192.168.1.11", "level": "INFO", "message": "User login successful", "user_email": "test@example.com", "user_phone": "13800138000"}
+{"timestamp": "2023-10-10T13:55:47Z", "ip": "192.168.1.12", "level": "ERROR", "message": "SQL injection attempt detected", "query": "SELECT * FROM users WHERE username = 'admin' OR '1'='1'"}
+[ERROR] 2023-10-10T13:55:48 - Failed to execute query: UPDATE users SET password = 'hacked' WHERE id = 1
+[WARN] 2023-10-10T13:55:49 - Suspicious activity detected from IP 192.168.1.13
+[INFO] 2023-10-10T13:55:50 - User registration completed for user@example.com
+2023-10-10T13:55:51 [INFO] User login successful for username: admin, password: secret123
+2023-10-10T13:55:52 [ERROR] Authentication failed for IP 192.168.1.14, token: abc123def456
+2023-10-10T13:55:53 [WARN] Potential XSS attack detected: <img src=x onerror=alert('XSS')>
+2023-10-10T13:55:54 [INFO] User profile updated for credit_card: 4111-1111-1111-1111
+2023-10-10T13:55:55 [ERROR] Command injection attempt: rm -rf /tmp/*
+2023-10-10T13:55:56 [INFO] User registration completed for ID card: 110101199001011234
+2023-10-10T13:55:57 [WARN] Directory traversal attempt: /etc/shadow
+2023-10-10T13:55:58 [INFO] Normal request processed successfully
+2023-10-10T13:55:59 [ERROR] SQL injection detected: UNION SELECT username, password FROM users

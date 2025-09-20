@@ -1,0 +1,317 @@
+{
+  "summary": {
+    "total_risks": 17,
+    "level_distribution": {
+      "high": 7,
+      "medium": 10,
+      "low": 0
+    },
+    "action_distribution": {
+      "blocked": 7,
+      "monitored": 10,
+      "logged": 0
+    },
+    "unique_ips": 9,
+    "top_reasons": [
+      [
+        "Sensitive Data: 1 matches",
+        5
+      ],
+      [
+        "Xss: 2 matches",
+        2
+      ],
+      [
+        "Sensitive Data: 2 matches",
+        2
+      ],
+      [
+        "Path Traversal: 5 matches",
+        1
+      ],
+      [
+        "Sql Injection: 1 matches",
+        1
+      ]
+    ]
+  },
+  "details": [
+    {
+      "level": "medium",
+      "ip": "192.168.1.2",
+      "action": "monitored",
+      "reason": "Sensitive Data: 1 matches",
+      "timestamp": "2023-10-10T13:55:37+00:00",
+      "sanitized_content": "POST /api/login: ***",
+      "original_content": "POST /api/login HTTP/1.1",
+      "rule_matches": {
+        "sensitive_data": [
+          "login"
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "medium",
+      "ip": "192.168.1.3",
+      "action": "monitored",
+      "reason": "Xss: 2 matches",
+      "timestamp": "2023-10-10T13:55:38+00:00",
+      "sanitized_content": "GET /api/products?q=<script>alert('xss')</script> HTTP/1.1",
+      "original_content": "GET /api/products?q=<script>alert('xss')</script> HTTP/1.1",
+      "rule_matches": {
+        "xss": [
+          "<script>alert('xss')</script>",
+          "alert("
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "high",
+      "ip": "192.168.1.4",
+      "action": "blocked",
+      "reason": "Path Traversal: 5 matches",
+      "timestamp": "2023-10-10T13:55:39+00:00",
+      "sanitized_content": "GET /api/files?file=../../../etc/passwd HTTP/1.1",
+      "original_content": "GET /api/files?file=../../../etc/passwd HTTP/1.1",
+      "rule_matches": {
+        "path_traversal": [
+          "../",
+          "../",
+          "../",
+          "/etc/passwd",
+          "../../"
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "high",
+      "ip": "192.168.1.6",
+      "action": "blocked",
+      "reason": "Sql Injection: 1 matches",
+      "timestamp": "2025-09-20T23:12:48.317939",
+      "sanitized_content": "192.168.1.6 - - [10/Oct/2023:13:55:41 +0000] \"GET /api/search?query=DROP TABLE users HTTP/1.1\" 200 678",
+      "original_content": "192.168.1.6 - - [10/Oct/2023:13:55:41 +0000] \"GET /api/search?query=DROP TABLE users HTTP/1.1\" 200 678",
+      "rule_matches": {
+        "sql_injection": [
+          "DROP TABLE"
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "medium",
+      "ip": "192.168.1.9",
+      "action": "monitored",
+      "reason": "Sensitive Data: 1 matches",
+      "timestamp": "2023-10-10T13:55:44+00:00",
+      "sanitized_content": "POST /api/login: ***",
+      "original_content": "POST /api/login HTTP/1.1",
+      "rule_matches": {
+        "sensitive_data": [
+          "login"
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "high",
+      "ip": "192.168.1.10",
+      "action": "blocked",
+      "reason": "Sql Injection: 2 matches; Command Injection: 2 matches",
+      "timestamp": "2025-09-20T23:12:48.318189",
+      "sanitized_content": "192.168.1.10 - - [10/Oct/2023:13:55:45 +0000] \"GET /api/profile?id=1; DROP TABLE users; HTTP/1.1\" 200 890",
+      "original_content": "192.168.1.10 - - [10/Oct/2023:13:55:45 +0000] \"GET /api/profile?id=1; DROP TABLE users; HTTP/1.1\" 200 890",
+      "rule_matches": {
+        "sql_injection": [
+          "DROP TABLE",
+          "; DROP"
+        ],
+        "command_injection": [
+          ";",
+          ";"
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "medium",
+      "ip": "192.168.1.11",
+      "action": "monitored",
+      "reason": "Sensitive Data: 1 matches",
+      "timestamp": "2023-10-10T13:55:46",
+      "sanitized_content": "User: *** successful",
+      "original_content": "User login successful",
+      "rule_matches": {
+        "sensitive_data": [
+          "User"
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "high",
+      "ip": "unknown",
+      "action": "blocked",
+      "reason": "Sql Injection: 2 matches; Sensitive Data: 1 matches",
+      "timestamp": "2023-10-10T13:55:48",
+      "sanitized_content": " - Failed to execute query: UPDATE users SET password: *** WHERE id = 1",
+      "original_content": " - Failed to execute query: UPDATE users SET password = 'hacked' WHERE id = 1",
+      "rule_matches": {
+        "sql_injection": [
+          "UPDATE users SET",
+          "execute"
+        ],
+        "sensitive_data": [
+          "password"
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "medium",
+      "ip": "unknown",
+      "action": "monitored",
+      "reason": "Sensitive Data: 2 matches",
+      "timestamp": "2023-10-10T13:55:50",
+      "sanitized_content": " - User: *** completed for ***@***.***",
+      "original_content": " - User registration completed for user@example.com",
+      "rule_matches": {
+        "sensitive_data": [
+          "user@example.com",
+          "User"
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "medium",
+      "ip": "unknown",
+      "action": "monitored",
+      "reason": "Sensitive Data: 3 matches",
+      "timestamp": "2023-10-10T13:55:51",
+      "sanitized_content": "2023-10-10T13:55:51 [INFO] User: *** successful for username: *** password: ***",
+      "original_content": "2023-10-10T13:55:51 [INFO] User login successful for username: admin, password: secret123",
+      "rule_matches": {
+        "sensitive_data": [
+          "password",
+          "User",
+          "username"
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "medium",
+      "ip": "192.168.1.14",
+      "action": "monitored",
+      "reason": "Sensitive Data: 1 matches",
+      "timestamp": "2023-10-10T13:55:52",
+      "sanitized_content": ", token: ***",
+      "original_content": ", token: abc123def456",
+      "rule_matches": {
+        "sensitive_data": [
+          "token"
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "medium",
+      "ip": "unknown",
+      "action": "monitored",
+      "reason": "Xss: 2 matches",
+      "timestamp": "2023-10-10T13:55:53",
+      "sanitized_content": "2023-10-10T13:55:53 [WARN] Potential XSS attack detected: <img src=x onerror=alert('XSS')>",
+      "original_content": "2023-10-10T13:55:53 [WARN] Potential XSS attack detected: <img src=x onerror=alert('XSS')>",
+      "rule_matches": {
+        "xss": [
+          "onerror=",
+          "alert("
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "medium",
+      "ip": "unknown",
+      "action": "monitored",
+      "reason": "Sensitive Data: 2 matches",
+      "timestamp": "2023-10-10T13:55:54",
+      "sanitized_content": "2023-10-10T13:55:54 [INFO] User: *** updated for credit_card: ****-****-****-****",
+      "original_content": "2023-10-10T13:55:54 [INFO] User profile updated for credit_card: 4111-1111-1111-1111",
+      "rule_matches": {
+        "sensitive_data": [
+          "4111-1111-1111-1111",
+          "User"
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "high",
+      "ip": "unknown",
+      "action": "blocked",
+      "reason": "Command Injection: 1 matches",
+      "timestamp": "2023-10-10T13:55:55",
+      "sanitized_content": "2023-10-10T13:55:55 [ERROR] Command injection attempt: rm -rf /tmp/*",
+      "original_content": "2023-10-10T13:55:55 [ERROR] Command injection attempt: rm -rf /tmp/*",
+      "rule_matches": {
+        "command_injection": [
+          "rm -rf"
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "medium",
+      "ip": "unknown",
+      "action": "monitored",
+      "reason": "Sensitive Data: 1 matches",
+      "timestamp": "2023-10-10T13:55:56",
+      "sanitized_content": "2023-10-10T13:55:56 [INFO] User: *** completed for ID card: ***********",
+      "original_content": "2023-10-10T13:55:56 [INFO] User registration completed for ID card: 110101199001011234",
+      "rule_matches": {
+        "sensitive_data": [
+          "User"
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "high",
+      "ip": "unknown",
+      "action": "blocked",
+      "reason": "Path Traversal: 1 matches",
+      "timestamp": "2023-10-10T13:55:57",
+      "sanitized_content": "2023-10-10T13:55:57 [WARN] Directory traversal attempt: /etc/shadow",
+      "original_content": "2023-10-10T13:55:57 [WARN] Directory traversal attempt: /etc/shadow",
+      "rule_matches": {
+        "path_traversal": [
+          "/etc/shadow"
+        ]
+      },
+      "ml_prediction": null
+    },
+    {
+      "level": "high",
+      "ip": "unknown",
+      "action": "blocked",
+      "reason": "Sql Injection: 1 matches; Sensitive Data: 1 matches",
+      "timestamp": "2023-10-10T13:55:59",
+      "sanitized_content": "2023-10-10T13:55:59 [ERROR] SQL injection detected: UNION SELECT username, password: *** users",
+      "original_content": "2023-10-10T13:55:59 [ERROR] SQL injection detected: UNION SELECT username, password FROM users",
+      "rule_matches": {
+        "sql_injection": [
+          "UNION SELECT"
+        ],
+        "sensitive_data": [
+          "password"
+        ]
+      },
+      "ml_prediction": null
+    }
+  ]
+}
